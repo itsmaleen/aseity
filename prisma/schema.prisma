@@ -14,8 +14,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  password Password?
-  notes    Note[]
+  password   Password?
+  identities Identity[]
 }
 
 model Password {
@@ -25,14 +25,32 @@ model Password {
   userId String @unique
 }
 
-model Note {
-  id    String @id @default(cuid())
-  title String
-  body  String
+model Experience {
+  id         String @id @default(cuid())
+  experience String
+  votes      Int    @default(0)
+  outcome    Int    @default(0)
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String
+  identity   Identity @relation(fields: [identityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  identityId String   @unique
 }
+
+model Identity {
+  id    String @id @default(cuid())
+  email String
+
+  createdAt DateTime @default(now())
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId      String
+  experiences Experience[]
+
+}
+
+// enum Outcome {
+//   POSITIVE
+//   NEGATIVE
+//   NEUTRAL
+// }
